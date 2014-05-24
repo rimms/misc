@@ -1,0 +1,7 @@
+*~
+build/
+.waf-*
+.waf3-*
+.lock-*
+*.log
+downloads/
