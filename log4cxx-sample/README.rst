@@ -4,24 +4,27 @@ log4cxx sample
 Download and Insall
 -------------------
 
-```
-$ .install.sh
-```
+::
+
+  $ .install.sh
+
 
 Build
 -----
 
-```
-$ ./waf configure
-$ ./waf
-```
+::
+
+  $ ./waf configure
+  $ ./waf
+
 
 Run
 ---
 
-```
-$ ./build/logging-sample config/log4cxx.xml
-```
+::
+
+  $ ./build/logging-sample config/log4cxx.xml
+
 
 Requirements
 ------------
