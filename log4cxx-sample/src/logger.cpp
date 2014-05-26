@@ -4,56 +4,70 @@
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/xml/domconfigurator.h>
 
+#define LOGGER_NAME "jubatus"
+
 namespace logger {
 
-// enough to use only one logger
-log4cxx::LoggerPtr main_logger = log4cxx::Logger::getLogger("sample");
+#define DEFINE_LOG_LEVEL(level, likeliness) \
+    void log##level( \
+        const std::string& msg, \
+        const char* file, \
+        const int line) { \
+      log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger(LOGGER_NAME); \
+      if (likeliness(logger->is##level##Enabled())) { \
+        logger->forcedLog( \
+            log4cxx::Level::get##level(), \
+            msg, \
+            log4cxx::spi::LocationInfo(file, "", line)); \
+      } \
+    }
 
-void logger::init(const std::string& config_file) {
-  if (config_file.empty()) {
-    log4cxx::BasicConfigurator::configure();
-  } else {
-    // If failed to perse, not throw exception (maybe log4cxx's specification)
-    log4cxx::xml::DOMConfigurator::configure(config_file);
+#define LOGGER_LIKELY
+#define LOGGER_UNLIKELY LOG4CXX_UNLIKELY
+
+DEFINE_LOG_LEVEL(Fatal, LOGGER_LIKELY)
+DEFINE_LOG_LEVEL(Error, LOGGER_LIKELY)
+DEFINE_LOG_LEVEL(Warn,  LOGGER_LIKELY)
+DEFINE_LOG_LEVEL(Info,  LOGGER_LIKELY)
+DEFINE_LOG_LEVEL(Debug, LOGGER_UNLIKELY)
+DEFINE_LOG_LEVEL(Trace, LOGGER_UNLIKELY)
+
+stream_logger::stream_logger(
+    const int level,
+    const char* file,
+    const int line)
+    : level_(level), file_(file), line_(line) {}
+
+stream_logger::~stream_logger() {
+  switch(level_) {
+  case FATAL:
+    logFatal(buf_.str(), file_, line_);
+    break;
+  case ERROR:
+    logError(buf_.str(), file_, line_);
+    break;
+  case WARN:
+    logWarn(buf_.str(), file_, line_);
+    break;
+  case INFO:
+    logInfo(buf_.str(), file_, line_);
+    break;
+  case DEBUG:
+    logDebug(buf_.str(), file_, line_);
+    break;
+  case TRACE:
+    logTrace(buf_.str(), file_, line_);
+    break;
   }
 }
 
-void logger::log(log4cxx::LevelPtr level, const std::string& msg, const char* file, int line) {
-  if (main_logger->isEnabledFor(level)) {
-    main_logger->forcedLog(level, msg, log4cxx::spi::LocationInfo(file, "", line));
-  }
+void init() {
+  log4cxx::BasicConfigurator::configure();
 }
 
-void logger::log(const std::string& level, const std::string& msg, const char* file, int line) {
-  log(log4cxx::Level::toLevel(level), msg, file, line);
+void init(const std::string& config_file) {
+  // Exception will not be thrown even if there is an error in config file.
+  log4cxx::xml::DOMConfigurator::configure(config_file);
 }
 
-void logger::fatal(const std::string& msg, const char* file, int line) {
-  log(log4cxx::Level::getFatal(), msg, file, line);
-}
-
-void logger::error(const std::string& msg, const char* file, int line) {
-  log(log4cxx::Level::getError(), msg, file, line);
-}
-
-void logger::warn(const std::string& msg, const char* file, int line) {
-  log(log4cxx::Level::getWarn(), msg, file, line);
-}
-
-void logger::info(const std::string& msg, const char* file, int line) {
-  log(log4cxx::Level::getInfo(), msg, file, line);
-}
-
-void logger::debug(const std::string& msg, const char* file, int line) {
-  if (LOG4CXX_UNLIKELY(main_logger->isDebugEnabled())) {
-    main_logger->forcedLog(log4cxx::Level::getDebug(), msg, log4cxx::spi::LocationInfo(file, "", line));
-  }
-}
-
-void logger::trace(const std::string& msg, const char* file, int line) {
-  if (LOG4CXX_UNLIKELY(main_logger->isTraceEnabled())) {
-    main_logger->forcedLog(log4cxx::Level::getTrace(), msg, log4cxx::spi::LocationInfo(file, "", line));
-  }
-}
-
-}  // logger
+}  // namespace logger

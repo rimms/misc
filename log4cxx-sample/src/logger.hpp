@@ -1,50 +1,50 @@
 #ifndef LOGGER_LOGGER_HPP_
 #define LOGGER_LOGGER_HPP_
 
-#include <string>
-
-#include <log4cxx/logger.h>
+#include <sstream>
 #include <log4cxx/level.h>
+
 #include <jubatus/util/lang/noncopyable.h>
 
+#define FATAL ::log4cxx::Level::FATAL_INT
+#define ERROR ::log4cxx::Level::ERROR_INT
+#define WARN  ::log4cxx::Level::WARN_INT
+#define INFO  ::log4cxx::Level::INFO_INT
+#define DEBUG ::log4cxx::Level::DEBUG_INT
+#define TRACE ::log4cxx::Level::TRACE_INT
+
+#define LOG(level) ::logger::stream_logger(level, __FILE__, __LINE__)
 
 namespace logger {
 
-class logger : jubatus::util::lang::noncopyable {
+class stream_logger : jubatus::util::lang::noncopyable {
  public:
-  static void init(const std::string& config_file);
+  stream_logger(const int level, const char* file, const int line);
+  ~stream_logger();
 
-  static void log(log4cxx::LevelPtr level, const std::string& msg, const char* file, int line);
-  static void log(const std::string& level, const std::string& msg, const char* file, int line);
+  template <typename T>
+  inline stream_logger& operator<<(const T& msg) {
+    buf_ << msg;
+    return *this;
+  }
 
-  static void fatal(const std::string& msg, const char* file, int line);
-  static void error(const std::string& msg, const char* file, int line);
-  static void warn(const std::string& msg, const char* file, int line);
-  static void info(const std::string& msg, const char* file, int line);
-  static void debug(const std::string& msg, const char* file, int line);
-  static void trace(const std::string& msg, const char* file, int line);
+ private:
+  const int level_;
+  const char* file_;
+  const int line_;
+  std::ostringstream buf_;
 };
 
-}  // logger
+/**
+ * Initializes the logging library. (standard output)
+ */
+void init();
 
-#define LOG_FATAL(msg) \
-  logger::logger::fatal(msg, __FILE__, __LINE__)
+/**
+ * Initializes the logging library with given config file.
+ */
+void init(const std::string&);
 
-#define LOG_ERROR(msg) \
-  logger::logger::error(msg, __FILE__, __LINE__)
-
-#define LOG_WARN(msg) \
-  logger::logger::warn(msg, __FILE__, __LINE__)
-
-#define LOG_INFO(msg) \
-  logger::logger::info(msg, __FILE__, __LINE__)
-
-#define LOG_DEBUG(msg) \
-  logger::logger::debug(msg, __FILE__, __LINE__)
-
-#define LOG_TRACE(msg) \
-  logger::logger::trace(msg, __FILE__, __LINE__)
-
-#define LOG(level, msg) LOG_##level(msg)
+}  // namespace logger
 
 #endif  // LOGGER_LOGGER_HPP_

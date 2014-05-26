@@ -16,7 +16,7 @@
   </appender>
 
   <root>
-    <priority value ="trace" />
+    <priority value="trace" />
     <appender-ref ref="stdout"/>
     <appender-ref ref="file"/>
   </root>
