@@ -6,6 +6,8 @@
 
 #include <jubatus/util/lang/noncopyable.h>
 
+#define LOG(level) LOG_##level(level)
+
 #define FATAL ::log4cxx::Level::FATAL_INT
 #define ERROR ::log4cxx::Level::ERROR_INT
 #define WARN  ::log4cxx::Level::WARN_INT
@@ -13,7 +15,22 @@
 #define DEBUG ::log4cxx::Level::DEBUG_INT
 #define TRACE ::log4cxx::Level::TRACE_INT
 
-#define LOG(level) ::logger::stream_logger(level, __FILE__, __LINE__)
+// Internal macros
+#define STREAM_LOGGER(level) \
+    ::logger::stream_logger(level, __FILE__, __LINE__)
+
+#ifdef NDEBUG
+#define DEBUG_ONLY true ? (void) 0 : ::logger::voidify() & // compile away
+#else
+#define DEBUG_ONLY
+#endif
+
+#define LOG_FATAL(level) STREAM_LOGGER(level)
+#define LOG_ERROR(level) STREAM_LOGGER(level)
+#define LOG_WARN(level)  STREAM_LOGGER(level)
+#define LOG_INFO(level)  STREAM_LOGGER(level)
+#define LOG_DEBUG(level) DEBUG_ONLY STREAM_LOGGER(level)
+#define LOG_TRACE(level) DEBUG_ONLY STREAM_LOGGER(level)
 
 namespace logger {
 
@@ -33,6 +50,13 @@ class stream_logger : jubatus::util::lang::noncopyable {
   const char* file_;
   const int line_;
   std::ostringstream buf_;
+
+};
+
+class voidify {
+ public:
+  voidify() {}
+  void operator&(const stream_logger&) {}
 };
 
 /**
