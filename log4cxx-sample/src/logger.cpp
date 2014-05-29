@@ -1,8 +1,14 @@
 #include "logger.hpp"
 
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/xml/domconfigurator.h>
+
+#include <jubatus/util/lang/cast.h>
 
 #define LOGGER_NAME "jubatus"
 
@@ -31,6 +37,15 @@ DEFINE_LOG_LEVEL(Warn,  LOGGER_LIKELY)
 DEFINE_LOG_LEVEL(Info,  LOGGER_LIKELY)
 DEFINE_LOG_LEVEL(Debug, LOGGER_UNLIKELY)
 DEFINE_LOG_LEVEL(Trace, LOGGER_UNLIKELY)
+
+namespace {
+
+void setup_environment() {
+  std::string pid = jubatus::util::lang::lexical_cast<std::string>(::getpid());
+  ::setenv("JUBATUS_PID", pid.c_str(), 1); // overwrite environment variable
+}
+
+}  // namespace
 
 stream_logger::stream_logger(
     const int level,
@@ -62,10 +77,13 @@ stream_logger::~stream_logger() {
 }
 
 void init() {
+  setup_environment();
   log4cxx::BasicConfigurator::configure();
 }
 
 void init(const std::string& config_file) {
+  setup_environment();
+
   // Exception will not be thrown even if there is an error in config file.
   log4cxx::xml::DOMConfigurator::configure(config_file);
 }
