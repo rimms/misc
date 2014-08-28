@@ -13,15 +13,22 @@ int main() {
   int port = 9199;
   string name = "test";
 
+  int cnt = 0;
+  int err = 0;
+
   while (true) {
     jubatus::classifier::client::classifier client(host, port, name, 0);
     vector<labeled_datum> train_data;
 
     try {
+      ++cnt;
       client.train(train_data);
     } catch (std::exception& e) {
-      std::cerr << "fail to request: " << e.what() << std::endl;
+      ++err;
+      std::cerr << "fail to request(" << cnt << ") : " << e.what() << std::endl;
       client.get_client().close();
     }
+
+    if (err > 10 || cnt > 100000) break;
   }
 }
