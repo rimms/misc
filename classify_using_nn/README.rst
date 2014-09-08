@@ -3,18 +3,19 @@ Classify Shogun using Nearest Neighbour
 
 1. Run jubanearest_neighbour
 
-   ```
+.. code-block:: bash
+
    $ jubanearest_neighbor -f bin.json &
-   ```
 
 2. Run test script
 
-   ```
-   $ ./shogun_using_nn.py
-   足利 慶喜  ...  足利=8.57890176773 北条=5.32667899132 徳川=3.11914455891
-   足利 義昭  ...  足利=12.1789979935 徳川=1.57138991356
-   北条 守時  ...  北条=12.5856430531
-   ```
+.. code-block:: bash
+
+    $ ./shogun_using_nn.py
+    足利 慶喜  ...  足利=8.57890176773 北条=5.32667899132 徳川=3.11914455891
+    足利 義昭  ...  足利=12.1789979935 徳川=1.57138991356
+    北条 守時  ...  北条=12.5856430531
+
 
 Requirements
 ~~~~~~~~~~~~
