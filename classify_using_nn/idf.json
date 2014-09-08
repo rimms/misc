@@ -1,0 +1,20 @@
+{
+  "converter" : {
+    "string_filter_types": {},
+    "string_filter_rules":[],
+    "num_filter_types": {},
+    "num_filter_rules": [],
+    "string_types": {
+      "unigram": { "method": "ngram", "char_num": "1" }
+    },
+    "string_rules":[
+      {"key" : "*", "type" : "unigram", "sample_weight":"bin", "global_weight" : "idf"}
+    ],
+    "num_types": {},
+    "num_rules": []
+  },
+  "parameter" : {
+    "hash_num" : 64
+    },
+  "method": "euclid_lsh"
+}
