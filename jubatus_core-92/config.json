@@ -1,0 +1,22 @@
+{
+  "converter" : {
+    "num_rules" : [
+      { "key" : "*", "type" : "num" }
+    ]
+  },
+  "method" : "light_lof",
+  "parameter" : {
+    "nearest_neighbor_num" : 10,
+    "reverse_nearest_neighbor_num" : 30,
+    "method" : "euclid_lsh",
+    "parameter" : {
+      "hash_num" : 64
+    },
+    "unlearner" : "lru",
+    "unlearner_parameter" : {
+      "max_size": 3
+    }
+  }
+}
+
+
