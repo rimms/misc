@@ -1,0 +1,14 @@
+{
+  "converter" : {
+    "num_rules": [
+      {"key" : "*", "type" : "num"}
+    ]
+  },
+    "parameter" : {
+      "method" : "euclid_lsh",
+      "parameter" : {
+          "hash_num" : 512
+      }
+    },
+  "method": "nearest_neighbor_recommender"
+}
