@@ -11,9 +11,9 @@ from jubatus.common import Datum
 
 def make_datum():
     d = Datum()
-    d.add_string('string-key', 'str')
-    d.add_number('number-key',   1.0)
-    d.add_binary('binary-key', 'bin')
+    d.add_string('string-key',   'str')
+    d.add_number('number-key',     1.0)
+    d.add_binary('binary-key',  b'bin')
     return d
 
 
