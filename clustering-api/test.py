@@ -32,4 +32,4 @@ if __name__ == '__main__':
 
     print ('get_core_members => {}'.format(client.get_core_members()))
 
-    print ('get_nearest_members =>'.format(client.get_nearest_members(make_datum())))
+    print ('get_nearest_members => {}'.format(client.get_nearest_members(make_datum())))
