@@ -23,7 +23,7 @@
     "local_sensitivity": 1,
     "unlearner": "random",
     "unlearner_parameter": {
-      "max_size": 1000
+      "max_size": 10000
     }
   }
 }
