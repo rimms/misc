@@ -1,0 +1,15 @@
+FROM centos:7
+
+# ENV http_proxy http://my-proxy:8080
+# ENV https_proxy http://my-proxy:8080
+
+RUN yum -y update
+RUN yum clean all
+
+RUN yum -y groupinstall 'Development Tools'
+RUN yum -y install sudo wget
+RUN yum -y install git-core ruby rpm-build rpmdevtools spectool createrepo
+RUN yum -y install apr-devel apr-util-devel
+
+WORKDIR /root
+RUN git clone https://github.com/jubatus/jubatus.git
