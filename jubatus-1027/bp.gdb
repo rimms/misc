@@ -3,5 +3,4 @@ set target-async on
 set pagination off
 set non-stop on
 
-break ../jubatus/server/common/zk.cpp:452
-
+break ../jubatus/server/common/zk.cpp:437
